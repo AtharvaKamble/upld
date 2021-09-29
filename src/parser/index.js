@@ -13,6 +13,8 @@ function getArgs(rawArgs) {
         "--title": String,
         "--content": String,
         "--csv": String,
+        "--help": Boolean,
+        "-h": "--help",
       },
       {
         argv: rawArgs.slice(2),
@@ -32,6 +34,7 @@ function getArgs(rawArgs) {
     title: parsedArgs["--title"] || null,
     content: parsedArgs["--content"] || null,
     csv: parsedArgs["--csv"] || null,
+    help: parsedArgs["--help"] || null,
   };
 }
 
