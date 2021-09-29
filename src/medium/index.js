@@ -39,21 +39,30 @@ async function medium({ csvPath, title, content }) {
       };
 
       try {
-        const res = await axios({
-          url: `https://api.medium.com/v1/users/${authorId}/posts`,
-          method: "post",
-          json: true,
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "content-type": "application/json",
-          },
-          data: JSON.stringify(postData),
-        });
+        payload.forEach(async (element) => {
+          const postPayload = {
+            title: element["Name"],
+            contentFormat: "html",
+            content: element["Post Body"],
+            publishStatus: "draft",
+            canonicalUrl: `${domain}/development/${element["Slug"]}?utm_source=medium&utm_campaign=crosspost`,
+          };
+          const res = await axios({
+            url: `https://api.medium.com/v1/users/${authorId}/posts`,
+            method: "post",
+            json: true,
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "content-type": "application/json",
+            },
+            data: JSON.stringify(postPayload),
+          });
 
-        console.log(
-          chalk.green("Post uploaded successfully.\n") +
-            `You can check post here - ${chalk.cyan(res.data.data.url)}.`
-        );
+          console.log(
+            chalk.green("Post uploaded successfully.\n") +
+              `You can check post here - ${chalk.cyan(res.data.data.url)}.`
+          );
+        });
       } catch (error) {
         console.log(chalk.red(error));
         return;
