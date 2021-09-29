@@ -1,10 +1,10 @@
-const fs = require("fs");
+import fs from "fs";
 import Credentials from "../../credentials.json";
-const csv = require("csv-parser");
 import axios from "axios";
 import chalk from "chalk";
+const csv = require("csv-parser");
 
-const { domain, authorId, accessToken } = Credentials.medium;
+const { domain, authorId, accessToken } = Credentials.Medium;
 
 async function medium({ csvPath, title, content }) {
   if (!csvPath) {
@@ -18,7 +18,7 @@ async function medium({ csvPath, title, content }) {
 
   const payload = [];
   const oneTimePayload = {};
-  let tester = 0;
+
   fs.createReadStream("csv_data/RaftLabs_MainSite_Developments.csv")
     .pipe(csv())
     .on("data", (data) => {

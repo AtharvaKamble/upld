@@ -1,4 +1,5 @@
 import medium from "./medium";
+import tumblr from "./tumblr";
 import getArgs from "./parser";
 import chalk from "chalk";
 
