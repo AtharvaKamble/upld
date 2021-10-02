@@ -3,7 +3,7 @@ import Credentials from "../../credentials.json";
 import axios from "axios";
 import chalk from "chalk";
 import { getCanonicalUrl } from "../helpers";
-import ERRORS from "../errors";
+import MESSAGES from "../messages";
 const csv = require("csv-parser");
 
 const env = "DEV";
@@ -28,7 +28,7 @@ async function medium({ csvPath, title, content }) {
   try {
     fs.statSync(csvPath).isFile();
   } catch (error) {
-    console.log(ERRORS[error.code]);
+    console.log(MESSAGES.errors[error.code]);
     process.exit();
   }
 

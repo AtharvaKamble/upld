@@ -2,6 +2,8 @@ import medium from "./medium";
 import tumblr from "./tumblr";
 import getArgs from "./parser";
 import chalk from "chalk";
+import MESSAGES from "./messages";
+import { renderArgumentsList } from "../src/helpers";
 
 export async function cli(rawArgs) {
   const args = getArgs(rawArgs);
@@ -19,12 +21,12 @@ export async function cli(rawArgs) {
       content: args.content,
     });
   } else if (args.help === true) {
-    console.log(`${chalk.cyan("Usage:")} upld --[site_name] --[path_to_csv]`);
+    console.log(MESSAGES.USAGE);
+  } else if (args.showArgList === true) {
+    renderArgumentsList();
   } else {
     console.log(
-      `${chalk.yellow("Please provide site name.")}\n${chalk.cyan(
-        "Usage:"
-      )} upld --[site_name] --[path_to_csv]`
+      `${chalk.yellow("Please provide site name.")}\n${MESSAGES.USAGE}`
     );
   }
 }

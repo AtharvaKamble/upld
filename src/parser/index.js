@@ -1,4 +1,5 @@
 import arg from "arg";
+import MESSAGES from "../messages";
 
 function getArgs(rawArgs) {
   let parsedArgs;
@@ -15,16 +16,16 @@ function getArgs(rawArgs) {
         "--csv": String,
         "--help": Boolean,
         "-h": "--help",
+        "--arglist": Boolean,
       },
       {
         argv: rawArgs.slice(2),
       }
     );
-  } catch (e) {
-    const error =
-      e.code === "ARG_UNKNOWN_OPTION" ? "Error: Unknown argument." : null;
-    console.log(`${error}\nUsage: upld [--blog_site] [--title] [--content]`);
-    return { error };
+  } catch (error) {
+    const errorMessage = MESSAGES.errors[error.code];
+    console.log(`${errorMessage}\n${MESSAGES.USAGE}`);
+    process.exit();
   }
 
   return {
@@ -35,6 +36,7 @@ function getArgs(rawArgs) {
     content: parsedArgs["--content"] || null,
     csv: parsedArgs["--csv"] || null,
     help: parsedArgs["--help"] || null,
+    showArgList: parsedArgs["--arglist"] || false,
   };
 }
 
