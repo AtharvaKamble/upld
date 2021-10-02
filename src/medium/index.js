@@ -2,42 +2,42 @@ import fs from "fs";
 import Credentials from "../../credentials.json";
 import axios from "axios";
 import chalk from "chalk";
+import { getCanonicalUrl } from "../helpers";
+import ERRORS from "../errors";
 const csv = require("csv-parser");
 
-const { domain, authorId, accessToken } = Credentials.Medium;
+const env = "DEV";
+
+const { domain, baseDomain, authorId, accessToken } =
+  env === "DEV" ? Credentials.MediumPersonal : Credentials.Medium;
 
 async function medium({ csvPath, title, content }) {
   if (!csvPath) {
     console.log(
       chalk.yellow(
-        "Please provide a title and content or relative path to csv for the Medium post."
+        `Please provide a ${chalk.cyan("title and content")} or ${chalk.cyan(
+          "relative path to csv"
+        )} for the Medium post.`
       )
     );
     process.exit();
   }
 
   const payload = [];
-  const oneTimePayload = {};
 
-  fs.createReadStream("csv_data/RaftLabs_MainSite_Developments.csv")
+  try {
+    fs.statSync(csvPath).isFile();
+  } catch (error) {
+    console.log(ERRORS[error.code]);
+    process.exit();
+  }
+
+  fs.createReadStream(csvPath)
     .pipe(csv())
     .on("data", (data) => {
       payload.push(data);
     })
     .on("end", async (data) => {
-      oneTimePayload.title = payload[13]["Name"];
-      oneTimePayload.body = payload[13]["Post Body"];
-      oneTimePayload.slug = payload[13]["Slug"];
-      oneTimePayload.canonicalUrl = `${domain}/development/${oneTimePayload.slug}?utm_source=medium&utm_campaign=crosspost`;
-
-      const postData = {
-        title: oneTimePayload.title,
-        contentFormat: "html",
-        content: oneTimePayload.body,
-        publishStatus: "draft",
-        canonicalUrl: oneTimePayload.canonicalUrl,
-      };
-
       try {
         payload.forEach(async (element) => {
           const postPayload = {
@@ -45,10 +45,15 @@ async function medium({ csvPath, title, content }) {
             contentFormat: "html",
             content: element["Post Body"],
             publishStatus: "draft",
-            canonicalUrl: `${domain}/development/${element["Slug"]}?utm_source=medium&utm_campaign=crosspost`,
+            canonicalUrl: getCanonicalUrl({
+              domain,
+              slug: element["Slug"],
+              utmSource: "medium",
+            }),
           };
+
           const res = await axios({
-            url: `https://api.medium.com/v1/users/${authorId}/posts`,
+            url: `https://${baseDomain}/v1/users/${authorId}/posts`,
             method: "post",
             json: true,
             headers: {
