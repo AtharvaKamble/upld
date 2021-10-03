@@ -6,7 +6,7 @@ import { getCanonicalUrl } from "../helpers";
 import MESSAGES from "../messages";
 const csv = require("csv-parser");
 
-const env = "DEV";
+const env = "DEV"; // DEV || PROD
 
 const { domain, baseDomain, authorId, accessToken } =
   env === "DEV" ? Credentials.MediumPersonal : Credentials.Medium;
@@ -45,15 +45,11 @@ async function medium({ csvPath, title, content }) {
             contentFormat: "html",
             content: element["Post Body"],
             publishStatus: "draft",
-            canonicalUrl: getCanonicalUrl({
-              domain,
-              slug: element["Slug"],
-              utmSource: "medium",
-            }),
+            canonicalUrl: `${domain}/development/${element["Slug"]}?utm_source=medium&utm_campaign=crosspost`,
           };
 
           const res = await axios({
-            url: `https://${baseDomain}/v1/users/${authorId}/posts`,
+            url: `https://api.medium.com/v1/users/${authorId}/posts`,
             method: "post",
             json: true,
             headers: {

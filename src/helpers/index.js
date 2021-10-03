@@ -11,7 +11,7 @@ export function renderArgumentsList() {
   ui.div({ text: MESSAGES.USAGE, padding: [1, 0, 1, 0] });
 
   ui.div({
-    text: chalk.black.bgWhite("Sites Available:"),
+    text: chalk.black.bgWhite("Site Flags:"),
     padding: [1, 0, 1, 0],
   });
 
@@ -83,7 +83,7 @@ export function renderArgumentsList() {
   );
 
   ui.div({
-    text: chalk.black.bgWhite("Additional Information:"),
+    text: chalk.black.bgWhite("Additional Flags:"),
     padding: [1, 0, 1, 0],
   });
 
