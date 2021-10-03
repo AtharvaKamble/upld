@@ -1,5 +1,6 @@
 import medium from "./medium";
 import tumblr from "./tumblr";
+import devto from "./devto";
 import getArgs from "./parser";
 import chalk from "chalk";
 import MESSAGES from "./messages";
@@ -16,6 +17,12 @@ export async function cli(rawArgs) {
     });
   } else if (args.tumblr === true) {
     await tumblr({
+      csvPath: args.csv,
+      title: args.title,
+      content: args.content,
+    });
+  } else if (args.devto === true) {
+    await devto({
       csvPath: args.csv,
       title: args.title,
       content: args.content,
